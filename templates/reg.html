@@ -1,0 +1,18 @@
+<html lang="ru">
+<head>
+    <title>Регистрация</title>
+</head>
+<body>
+    <a href="{% url 'main' %}">На главную</a>
+    <h1>Регистрация</h1>
+    {% if form.errors %}
+        <p>{{form.errors}}</p>
+    {% endif %}
+    <form action="{% url 'reg' %}" method='POST'>
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit">
+    </form>
+    <a href="{% url 'login' %}">Зарегистрирован?</a>
+</body>
+</html>
