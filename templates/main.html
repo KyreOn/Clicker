@@ -1,16 +1,43 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="{% static 'css/index.css' %}">
+    <script type="text/javascript" src="{% static 'js/index.js' %}"></script>
     <title>Главная</title>
 </head>
-<body>
+<body onload="int_boost({{ core.auto_click_interval }})">
 {% if auth  %}
-    <section>
-        <span>Вы зарегистрированны под именем {{ username }}</span>
-        <a href="{% url 'logout' %}">Выйти</a>
-    </section>
-    <h1>Вы зареганы</h1>
+    <main class="app">
+        <nav class="nav">
+            Привет, {{ user.username }}
+            <a href="{% url 'logout' %}">Выйти</a>
+        </nav>
+
+        <div class="container">
+            <div id='coins'>{{core.coins}}</div>
+            <button onclick="call_click()">Нажми меня</button>
+            <p>
+                Невероятная мощь клика: <span id="click_power">{{ core.click_power }}</span>
+            </p>
+        </div>
+
+        <aside class="boosts" id="boosts">
+            <h3>Бусты</h3>
+            <div class="boosts-holder" id="boosts-holder">
+                <button class="boost" id="str-boost" disabled=disabled onclick="buy_boost('/str_upgr')">
+                    <p>lvl: <span id="str-boost-level">{{core.str_boost.level}}</span></p>
+                    <p><span id="str-boost-price">{{core.str_boost.price}}</span></p>
+                </button>
+                <button class="boost" id="int-boost" disabled=disabled onclick="buy_boost('/int_upgr')">
+                    <p>lvl: <span id="int-boost-level">{{core.int_boost.level}}</span></p>
+                    <p><span id="int-boost-price">{{core.int_boost.price}}</span></p>
+                </button>
+            </div>
+        </aside>
+    </main>
 {% endif %}
 {% if not auth  %}
     <section>
