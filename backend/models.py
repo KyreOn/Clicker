@@ -2,51 +2,69 @@ from django.db import models
 from django.contrib.auth.models import User
 
 
-class Boost(models.Model):
+class StrBoost(models.Model):
     level = models.IntegerField(default=0)
-    price = models.IntegerField(default=10)
+    name = models.TextField(default='Имя буста')
+    description = models.TextField(default='Описание буста')
+    price = models.JSONField(default=dict([(0, 10), (1, 100), (2, 1000), (3, -1)]))
     buyable = models.BooleanField(default=False)
+    cur_price = models.IntegerField(default=10)
+    powers = models.JSONField(default=dict([(0, 0), (1, 1), (2, 5), (3, 10)]))
+    cur_power = models.IntegerField(default=0)
 
 
-class StrBoost(Boost):
-    pass
+class IntBoost(models.Model):
+    level = models.IntegerField(default=0)
+    name = models.TextField(default='Имя буста')
+    description = models.TextField(default='Описание буста')
+    price = models.JSONField(default=dict([(0, 10), (1, 100), (2, 1000), (3, -1)]))
+    buyable = models.BooleanField(default=False)
+    cur_price = models.IntegerField(default=10)
 
-
-class IntBoost(Boost):
-    pass
-
+    auto_click_intervals = models.JSONField(default=dict([(0, -1), (1, 10000), (2, 5000), (3, 1000)]))
+    cur_interval = models.IntegerField(default=-1)
 
 class Core(models.Model):
     user = models.OneToOneField(User, null=False, on_delete=models.CASCADE)
     coins = models.IntegerField(default=0)
     click_power = models.IntegerField(default=1)
-    auto_click_interval = models.IntegerField(default=-1)
-    str_boost = models.OneToOneField(StrBoost, null=True, on_delete=models.DO_NOTHING)
-    int_boost = models.OneToOneField(IntBoost, null=True, on_delete=models.DO_NOTHING)
+    str_boosts = models.ManyToManyField(StrBoost)
+    int_boosts = models.ManyToManyField(IntBoost)
 
     def click(self):
         self.coins += self.click_power
+        self.check_for_buyable()
         return self
 
-    def str_upgrade(self):
-        self.coins -= self.str_boost.price
-        self.str_boost.level += 1
-        self.str_boost.price = self.str_boost.price * 100
-        self.click_power = 10 ** self.str_boost.level
-        self.str_boost.save()
+    def str_upgrade(self, boost_id):
+        boost = self.str_boosts.get(id=boost_id)
+        self.coins -= boost.cur_price
+        boost.level += 1
+        boost.cur_power = boost.powers[str(boost.level)]
+        boost.cur_price = boost.price[str(boost.level)]
+        self.click_power += boost.cur_power
+        boost.save()
+        self.check_for_buyable()
 
-    def int_upgrade(self):
-        self.coins -= self.int_boost.price
-        self.int_boost.level += 1
-        self.int_boost.price = self.int_boost.price * 100
-        if self.int_boost.level == 0:
-            self.auto_click_interval = 0
-        if self.int_boost.level == 1:
-            self.auto_click_interval = 10000
-        if self.int_boost.level == 2:
-            self.auto_click_interval = 5000
-        if self.int_boost.level == 3:
-            self.auto_click_interval = 1000
-        self.click_power = 10 ** self.str_boost.level
-        self.int_boost.save()
+    def int_upgrade(self, boost_id):
+        boost = self.int_boosts.get(id=boost_id)
+        self.coins -= boost.cur_price
+        boost.level += 1
+        boost.cur_price = boost.price[str(boost.level)]
+        boost.cur_interval = boost.auto_click_intervals[str(boost.level)]
+        boost.save()
+        self.check_for_buyable()
 
+    def check_for_buyable(self):
+        for boost in self.str_boosts.all():
+            boost.buyable = self.coins >= boost.cur_price and not boost.cur_price == -1
+            boost.save()
+        for boost in self.int_boosts.all():
+            boost.buyable = self.coins >= boost.cur_price and not boost.cur_price == -1
+            boost.save()
+
+    def get_all_str_boost(self):
+        return self.str_boosts.all()
+
+    def get_all_int_boost(self):
+        return self.int_boosts.all()

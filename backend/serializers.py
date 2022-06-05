@@ -15,12 +15,11 @@ class IntBoostSerializer(serializers.ModelSerializer):
 
 
 class CoreSerializer(serializers.ModelSerializer):
-    str_boost = StrBoostSerializer()
-    int_boost = IntBoostSerializer()
+    str_boosts = StrBoostSerializer(source='get_all_str_boost', many=True)
+    int_boosts = IntBoostSerializer(source='get_all_int_boost', many=True)
     class Meta:
         model = Core
-        fields = ['coins', 'click_power', 'str_boost', 'int_boost', 'auto_click_interval']
-
+        fields = ['coins', 'click_power', 'str_boosts', 'int_boosts']
 
 
 

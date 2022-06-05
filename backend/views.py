@@ -9,7 +9,6 @@ from .forms import UserForm
 from .models import Core, StrBoost, IntBoost
 from .serializers import CoreSerializer
 
-
 def base(request):
     return redirect('main')
 
@@ -32,12 +31,16 @@ class RegView(APIView):
         if form.is_valid():
             user = form.save()
             login(request, user)
-            str_boost = StrBoost()
-            str_boost.save()
-            int_boost = IntBoost()
-            int_boost.save()
-            core = Core(user=user, str_boost=str_boost, int_boost=int_boost)
+            core = Core(user=user)
             core.save()
+            sb = core.str_boosts.create()
+            sb1 = core.str_boosts.create()
+            ib = core.int_boosts.create()
+            ib1 = core.int_boosts.create()
+            sb.save()
+            sb1.save()
+            ib.save()
+            ib1.save()
             return redirect('main')
         return render(request, 'reg.html', {'form': form})
 
@@ -74,18 +77,17 @@ def call_click(request):
 
 @api_view(['GET'])
 @login_required
-def str_upgrade(request):
+def str_upgrade(request, boost_id):
     core = Core.objects.get(user=request.user)
-    core.str_upgrade()
+    core.str_upgrade(boost_id)
     core.save()
 
     return Response({'core': CoreSerializer(core).data})
 
 @api_view(['GET'])
 @login_required
-def int_upgrade(request):
+def int_upgrade(request, boost_id):
     core = Core.objects.get(user=request.user)
-    core.int_upgrade()
+    core.int_upgrade(boost_id)
     core.save()
-
     return Response({'core': CoreSerializer(core).data})
