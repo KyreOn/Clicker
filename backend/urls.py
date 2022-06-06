@@ -23,7 +23,6 @@ urlpatterns = [
     path('sign-in/', views.LoginView.as_view(), name='login'),
     path('sign-up/', views.RegView.as_view(), name='reg'),
     path('logout', views.user_logout, name='logout'),
-    path('call_click/', views.call_click),
-    path('str_upgr/<int:boost_id>', views.str_upgrade),
-    path('int_upgr/<int:boost_id>', views.int_upgrade),
+    path('update/', views.update),
+    path('core/', views.get_core),
 ]

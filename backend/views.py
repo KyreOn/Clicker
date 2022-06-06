@@ -65,29 +65,15 @@ def user_logout(request):
     return redirect('main')
 
 
-@api_view(['GET'])
-@login_required
-def call_click(request):
+@api_view(['POST'])
+def update(request):
     core = Core.objects.get(user=request.user)
-    core.click()
+    core.update(request.data['core'])
     core.save()
-
     return Response({'core': CoreSerializer(core).data})
 
 
 @api_view(['GET'])
-@login_required
-def str_upgrade(request, boost_id):
+def get_core(request):
     core = Core.objects.get(user=request.user)
-    core.str_upgrade(boost_id)
-    core.save()
-
-    return Response({'core': CoreSerializer(core).data})
-
-@api_view(['GET'])
-@login_required
-def int_upgrade(request, boost_id):
-    core = Core.objects.get(user=request.user)
-    core.int_upgrade(boost_id)
-    core.save()
     return Response({'core': CoreSerializer(core).data})

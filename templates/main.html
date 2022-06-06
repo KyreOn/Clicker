@@ -9,7 +9,7 @@
     <title>Главная</title>
 </head>
 {% if auth  %}
-<body onload="{% for int_boost in core.int_boosts.all %} start_timer({{ int_boost.cur_interval }}, {{ int_boost.id }});{% endfor %}">
+<body onload="start(); {% for int_boost in core.int_boosts.all %} start_timer({{ int_boost.cur_interval }}, {{ int_boost.id }});{% endfor %}" onunload="update()">
 {% csrf_token %}
     <main class="app">
         <nav class="nav">
@@ -21,7 +21,7 @@
             <div id='coins'>{{core.coins}}</div>
             <button onclick="call_click()">Нажми меня</button>
             <p>
-                Невероятная мощь клика: <span id="click_power">{{ core.click_power }}</span>
+                Невероятная мощь клика: <span id="click-power">{{ core.click_power }}</span>
             </p>
         </div>
 
@@ -30,21 +30,21 @@
             <div class="boosts-holder" id="boosts-holder">
                 <div class="str-boosts-holder" id="str-boosts-holder">
                     {%  for str_boost in core.str_boosts.all %}
-                    <button class="boost" id="str-boost-{{ str_boost.id }}" onclick="buy_boost('str_upgr', {{ str_boost.id }})">
-                        <p><span id="str-boost-name-{{ str_boost.id }}">{{ str_boost.name }}</span></p>
-                        <p><span id="str-boost-desc-{{ str_boost.id }}">{{ str_boost.description }}</span></p>
-                        <p>lvl: <span id="str-boost-level-{{ str_boost.id }}">{{str_boost.level}}</span></p>
-                        <p><span id="str-boost-price-{{ str_boost.id }}">{{str_boost.cur_price}}</span></p>
+                    <button class="boost" id="str-boost-{{ str_boost.id }}" onclick="buy_boost('str', {{ str_boost.id }})">
+                        <p><span id="str-boost-name">{{ str_boost.name }}</span></p>
+                        <p><span id="str-boost-desc">{{ str_boost.description }}</span></p>
+                        <p>lvl: <span id="str-boost-level">{{str_boost.level}}</span></p>
+                        <p><span id="str-boost-price">{{str_boost.cur_price}}</span></p>
                     </button>
                     {% endfor %}
                 </div>
                 <div class="int-boosts-holder" id="int-boosts-holder">
                     {%  for int_boost in core.int_boosts.all %}
-                    <button class="boost" id="int-boost-{{ int_boost.id }}" onclick="buy_boost('int_upgr', {{ int_boost.id }})">
-                    <p><span id="int-boost-name-{{ int_boost.id }}">{{ int_boost.name }}</span></p>
-                        <p><span id="int-boost-desc-{{ int_boost.id }}">{{ int_boost.description }}</span></p>
-                        <p>lvl: <span id="int-boost-level-{{ int_boost.id }}">{{int_boost.level}}</span></p>
-                        <p><span id="int-boost-price-{{ int_boost.id }}">{{int_boost.cur_price}}</span></p>
+                    <button class="boost" id="int-boost-{{ int_boost.id }}" onclick="buy_boost('int', {{ int_boost.id }})">
+                    <p><span id="int-boost-name">{{ int_boost.name }}</span></p>
+                        <p><span id="int-boost-desc">{{ int_boost.description }}</span></p>
+                        <p>lvl: <span id="int-boost-level">{{int_boost.level}}</span></p>
+                        <p><span id="int-boost-price">{{int_boost.cur_price}}</span></p>
                     </button>
                     {% endfor %}
                 </div>
