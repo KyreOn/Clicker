@@ -109,7 +109,7 @@ function getCore() {
 function call_click(isAuto) {
     if (!isAuto){
         let button = document.getElementById('clicker-button')
-        //change_button_pos()
+        change_button_pos()
     }
 
     Game.add_coins(Game.click_power)
