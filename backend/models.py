@@ -11,6 +11,11 @@ class StrBoost(models.Model):
     cur_price = models.IntegerField(default=10)
     powers = models.JSONField(default=dict([(0, 0), (1, 1), (2, 5), (3, 10)]))
     cur_power = models.IntegerField(default=0)
+    level_names = models.JSONField(default=dict([(0, 'ноль'), (1, 'один'), (2, 'два'), (3, 'три')]))
+    cur_level_name = models.TextField(default='ноль')
+
+    def get_prices(self):
+        return list(dict(self.price).values())[:3]
 
     def update(self, data):
         self.level = data['level']
@@ -18,6 +23,7 @@ class StrBoost(models.Model):
         self.cur_price = data['cur_price']
         self.cur_power = data['cur_power']
         self.save()
+
 
 class IntBoost(models.Model):
     level = models.IntegerField(default=0)
@@ -28,6 +34,8 @@ class IntBoost(models.Model):
     cur_price = models.IntegerField(default=10)
     auto_click_intervals = models.JSONField(default=dict([(0, -1), (1, 10000), (2, 5000), (3, 1000)]))
     cur_interval = models.IntegerField(default=-1)
+    level_names = models.JSONField(default=dict([(0, 'ноль'), (1, 'один'), (2, 'два'), (3, 'три')]))
+    cur_level_name = models.TextField(default='ноль')
 
     def update(self, data):
         self.level = data['level']

@@ -1,19 +1,33 @@
+{% load static %}
 <html lang="ru">
 <head>
     <title>Авторизация</title>
+    <link rel="stylesheet" href="{% static 'css/reg.css' %}">
 </head>
 <body>
-    <a href="{% url 'main' %}">На главную</a>
-    <h1>Авторизация</h1>
-    <form action="{% url 'login' %}" method='POST'>
-        {% csrf_token %}
-        {{ form.username }}
-        {{ form.password }}
-        {% if invalid %}
-            <p>Данные не верны</p>
-        {% endif %}
-        <input type="submit">
-    </form>
-    <a href="{% url 'reg' %}">Не зарегистрирован?</a>
+    <main>
+        <h1>Авторизация</h1>
+        <div class="form-holder">
+            <form action="{% url 'login' %}" method='POST'>
+                {% csrf_token %}
+                <p>
+                    <label>Имя пользователя: </label>
+                {{ form.username }}
+                </p>
+                <p>
+                    <label>Пароль: </label>
+                {{ form.password }}
+                </p>
+                {% if invalid %}
+                    <p>Данные не верны</p>
+                {% endif %}
+                <input type="submit">
+            </form>
+        </div>
+        <div class="hrefs">
+            <a href="{% url 'reg' %}">Не зарегистрирован?</a>
+            <a href="{% url 'main' %}">На главную</a>
+        </div>
+    </main>
 </body>
 </html>

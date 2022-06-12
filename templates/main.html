@@ -11,54 +11,90 @@
 {% if auth  %}
 <body onload="start(); {% for int_boost in core.int_boosts.all %} start_timer({{ int_boost.cur_interval }}, {{ int_boost.id }});{% endfor %}" onunload="update()">
 {% csrf_token %}
-    <main class="app">
-        <nav class="nav">
-            Привет, {{ user.username }}
-            <a href="{% url 'logout' %}">Выйти</a>
-        </nav>
-
-        <div class="container">
-            <div id='coins'>{{core.coins}}</div>
-            <button onclick="call_click()">Нажми меня</button>
-            <p>
-                Невероятная мощь клика: <span id="click-power">{{ core.click_power }}</span>
-            </p>
-        </div>
-
-        <aside class="boosts" id="boosts">
-            <h3>Бусты</h3>
-            <div class="boosts-holder" id="boosts-holder">
-                <div class="str-boosts-holder" id="str-boosts-holder">
-                    {%  for str_boost in core.str_boosts.all %}
-                    <button class="boost" id="str-boost-{{ str_boost.id }}" onclick="buy_boost('str', {{ str_boost.id }})">
-                        <p><span id="str-boost-name">{{ str_boost.name }}</span></p>
-                        <p><span id="str-boost-desc">{{ str_boost.description }}</span></p>
-                        <p>lvl: <span id="str-boost-level">{{str_boost.level}}</span></p>
-                        <p><span id="str-boost-price">{{str_boost.cur_price}}</span></p>
-                    </button>
-                    {% endfor %}
-                </div>
-                <div class="int-boosts-holder" id="int-boosts-holder">
-                    {%  for int_boost in core.int_boosts.all %}
-                    <button class="boost" id="int-boost-{{ int_boost.id }}" onclick="buy_boost('int', {{ int_boost.id }})">
-                    <p><span id="int-boost-name">{{ int_boost.name }}</span></p>
-                        <p><span id="int-boost-desc">{{ int_boost.description }}</span></p>
-                        <p>lvl: <span id="int-boost-level">{{int_boost.level}}</span></p>
-                        <p><span id="int-boost-price">{{int_boost.cur_price}}</span></p>
-                    </button>
-                    {% endfor %}
-                </div>
+        <nav class="nav-auth">
+            <div class='coins' id='coins'>{{core.coins}} кадуш</div>
+            <div class='user-info'>
+                <img class='user-icon' src="{% static 'img/user.png' %}">
+                Кулити, {{ user.username }}!
+                <a href="{% url 'logout' %}">Выйти</a>
             </div>
-        </aside>
-    </main>
+        </nav>
+        <div class="game">
+            <div class="container" draggable="false">
+                <img src="{% static 'img/target.png' %}" draggable="false" class='clicker-button' id='clicker-button' onclick="call_click(false)">
+            </div>
+             <p class="click-power">
+                 Мощь: <span id="click-power">{{ core.click_power }}</span>
+             </p>
+            <aside class="boosts" id="boosts">
+                <div class="boost-title"><h3>Бусты</h3></div>
+                <div class="boosts-holder" id="boosts-holder">
+                    <div class="str-boosts-holder" id="str-boosts-holder">
+                        {%  for str_boost in core.str_boosts.all %}
+                            <div class="button-holder">
+                                <button class="str-boost boost" id="str-boost-{{ str_boost.id }}" onclick="buy_boost('str', {{ str_boost.id }})">
+                                    <p class="boost-price" id="str-boost-price"></p>
+                                    <p class="boost-name" id="str-boost-name">{{ str_boost.name }}<span id="new-level">+</span></p>
+                                    <div class="level-bar">
+                                        <div class="level-segment" id="segment-1" {% if str_boost.level < 1 %}style="opacity: 0.2;{% endif %}"></div>
+                                        <div class="level-segment" id="segment-2" {% if str_boost.level < 2 %}style="opacity: 0.2;{% endif %}"></div>
+                                        <div class="level-segment" id="segment-3" {% if str_boost.level < 3 %}style="opacity: 0.2;{% endif %}"></div>
+                                    </div>
+                                </button>
+                                <div class="float-window">
+                                    <div class="boost-name float-window-text">{{ str_boost.name }}</div>
+                                    <div class="boost-type float-window-text">Буст силы</div>
+                                    <div class="boost-price float-window-text">Цена: <span id="price-0"></span>/<span id="price-1"></span>/<span id="price-2"></span></div>
+                                    <div class="boost-level float-window-text">Текущий уровень: {{ str_boost.level }} ({{ str_boost.cur_level_name }})</div>
+                                    <hr>
+                                    <div class="boost-desc float-window-text">{{ str_boost.description }}</div>
+                                </div>
+                            </div>
+
+                        {% endfor %}
+                    </div>
+                    <div class="int-boosts-holder" id="int-boosts-holder">
+                        {%  for int_boost in core.int_boosts.all %}
+                            <div class="button-holder">
+                                <button class="int-boost boost" id="int-boost-{{ int_boost.id }}" onclick="buy_boost('int', {{ int_boost.id }})">
+                                    <p class="boost-price" id="int-boost-price"></p>
+                                    <p class="boost-name" id="int-boost-name">{{ int_boost.name }}<span id="new-level">+</span></p>
+                                    <div class="level-bar">
+                                        <div class="level-segment" id="segment-1" {% if int_boost.level < 1 %}style="opacity: 0.2;{% endif %}"></div>
+                                        <div class="level-segment" id="segment-2" {% if int_boost.level < 2 %}style="opacity: 0.2;{% endif %}"></div>
+                                        <div class="level-segment" id="segment-3" {% if int_boost.level < 3 %}style="opacity: 0.2;{% endif %}"></div>
+                                    </div>
+                                </button>
+                                <div class="float-window">
+                                    <div class="boost-name float-window-text">{{ int_boost.name }}</div>
+                                    <div class="boost-type float-window-text"><span>Буст интелекта</span></div>
+                                    <div class="boost-price float-window-text">Цена: <span id="price-0"></span>/<span id="price-1"></span>/<span id="price-2"></span></div>
+                                    <div class="boost-level float-window-text">Текущий уровень: {{ int_boost.level }} ({{ int_boost.cur_level_name }})</div>
+                                    <hr>
+                                    <div class="boost-desc float-window-text">{{ int_boost.description }}</div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </aside>
+        </div>
 {% endif %}
 <body>
 {% if not auth  %}
-    <section>
-        <a href="{% url 'login' %}">Войти</a>
-        <a href="{% url 'reg' %}">Зарегистрироваться</a>
-    </section>
-    <h1>Вы не зареганы</h1>
+    <nav class="nav-unauth">
+        <a class="auth-href" href="{% url 'login' %}">Войти</a>
+        <a class="auth-href" href="{% url 'reg' %}">Зарегистрироваться</a>
+    </nav>
+    <main class="main-unauth">
+        <div class="intro">
+            <span>Х</span>
+            <span>У</span>
+            <span>Е</span>
+            <span>Т</span>
+            <span>А</span>
+        </div>
+    </main>
 {% endif %}
 </body>
 </html>

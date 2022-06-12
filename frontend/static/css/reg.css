@@ -1,0 +1,70 @@
+@font-face {
+    font-family: "Vinnytsia";
+    src: url("../font/VinnytsiaSansBold.ttf") format("truetype");
+    font-style: normal;
+    font-weight: normal;
+}
+body {
+    background-color: #222027;
+}
+main {
+    height: 90%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+h1 {
+    color: white;
+    font-family: Vinnytsia, sans-serif;
+    font-size: 48px;
+    text-decoration: underline;
+}
+.form-holder {
+    padding: 30px;
+    background-color: #363245;
+    border-radius: 25px;
+    box-shadow: 0 0 15px black;
+}
+form{
+    display: flex;
+    flex-direction: column;
+}
+label {
+    color: white;
+    font-family: Vinnytsia, sans-serif;
+    font-size: 20px;
+}
+input{
+    border-radius: 10px;
+    font-family: Vinnytsia, sans-serif;
+    font-size: 20px;
+    padding: 5px;
+    background-color: #494654;
+    border: 3px solid white;
+    color: white;
+}
+input[type='submit']{
+    margin-top: 20px;
+    width: 50%;
+    align-self: center;
+    color: white;
+}
+input[type='submit']:hover {
+    background-color: #504D5C;
+}
+input[type='submit']:active {
+    background-color: #2A282F;
+}
+.hrefs{
+    margin-top: 10px;
+}
+a {
+    color: white;
+    font-family: Vinnytsia, sans-serif;
+    margin-left: 50px;
+    margin-right: 50px;
+}
+a:hover{
+    color: darkgray;
+}

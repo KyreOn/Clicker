@@ -1,18 +1,27 @@
+{% load static %}
 <html lang="ru">
 <head>
     <title>Регистрация</title>
+    <link rel="stylesheet" href="{% static 'css/reg.css' %}">
 </head>
 <body>
-    <a href="{% url 'main' %}">На главную</a>
-    <h1>Регистрация</h1>
-    {% if form.errors %}
-        <p>{{form.errors}}</p>
-    {% endif %}
-    <form action="{% url 'reg' %}" method='POST'>
-        {% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit">
-    </form>
-    <a href="{% url 'login' %}">Зарегистрирован?</a>
+    <main>
+        <h1>Регистрация</h1>
+        <div class="form-holder">
+        {% if form.errors %}
+            <p>{{form.errors}}</p>
+        {% endif %}
+        <form action="{% url 'reg' %}" method='POST'>
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="submit">
+        </form>
+        </div>
+        <div class="hrefs">
+            <a href="{% url 'login' %}">Зарегистрирован?</a>
+            <a href="{% url 'main' %}">На главную</a>
+        </div>
+
+    </main>
 </body>
 </html>
